@@ -18,8 +18,7 @@ class Discount
 
     public function insertDiscount($data)
     {
-        // print_r($data);
-        // die;
+      
 
         $product_id = mysqli_real_escape_string($this->db->link, $data['product']);
         $discount = mysqli_real_escape_string($this->db->link, $data['discount']);

@@ -1,17 +1,31 @@
 <?php
 
-// For test payments we want to enable the sandbox mode. If you want to put live
-// payments through then this setting needs changing to `false`.
 $enableSandbox = true;
+$data['item_name'] = $itemName;
+$data['amount'] = $itemAmount;
+$amount=$_POST['amount_total'];
+$fname = $_POST['fname'];
+$lname = $_POST['lname'];
+$note = $_POST['note'];
+$payment = $_POST['payment'];
+$address = $_POST['fulladdress'];
 
+
+$returnUrl = 'http://localhost/onlinefoodorder/twakka/payment-successfull.php?' .
+    'amount=' . urlencode($amount) .
+    '&fname=' . urlencode($fname) .
+    '&lname=' . urlencode($lname) .
+    '&note=' . urlencode($note) .
+    '&payment=' . urlencode($payment) .
+    '&address=' . urlencode($address);
 
 // PayPal settings. Change these to your account details and the relevant URLs
 // for your site.
 $paypalConfig = [
 	'email' => 'srijal.fantastic-facilitator@gmail.com',
-	'return_url' => 'http://localhost/twakkakhana/twakka/payment-successfull.php',
-	'cancel_url' => 'http://localhost/twakkakhana/twakka/payment-cancelled.php',
-	'notify_url' => 'http://localhost/twakkakhana/twakka/checkout.php'
+	'return_url' => $returnUrl,
+	'cancel_url' => 'http://localhost/onlinefoodorder/twakka/payment-cancelled.php',
+	'notify_url' => 'http://localhost/onlinefoodorder/twakka/checkout.php'
 ];
 
 $paypalUrl = $enableSandbox ? 'https://www.sandbox.paypal.com/cgi-bin/webscr' : 'https://www.paypal.com/cgi-bin/webscr';
@@ -20,7 +34,7 @@ $paypalUrl = $enableSandbox ? 'https://www.sandbox.paypal.com/cgi-bin/webscr' : 
 $itemName = 'Online Payment Twakka Khana';
 
 
-$amount=$_POST['amount_total'];
+//$amount=$_POST['amount_total'];
 $itemAmount = (float)$amount;
 $itemAmount=$itemAmount/132;
 
@@ -44,17 +58,13 @@ if (!isset($_POST["txn_id"]) && !isset($_POST["txn_type"])) {
 	$data['return'] = stripslashes($paypalConfig['return_url']);
 	$data['cancel_return'] = stripslashes($paypalConfig['cancel_url']);
 	$data['notify_url'] = stripslashes($paypalConfig['notify_url']);
-
 	// Set the details about the product being purchased, including the amount
 	// and currency so that these aren't overridden by the form data.
 	$data['item_name'] = $itemName;
 	$data['amount'] = $itemAmount;
 	$data['currency_code'] = 'USD';
 
-	// Add any custom fields for the query string.
-	//$data['custom'] = USERID;
 
-	// Build the query string from the data.
 	$queryString = http_build_query($data);
 
 	// Redirect to paypal IPN

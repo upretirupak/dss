@@ -1,4 +1,5 @@
 <?php
+//namespace OnlineFoodOrder\Classes;
 include_once '../lib/Database.php';
 include_once '../helpers/Format.php';
 
@@ -11,6 +12,7 @@ ini_set('display_errors', 1);
 
 ?>
 <?php
+
 class Customer
 {
   private $db;
@@ -24,6 +26,8 @@ class Customer
 
   public function customerRegistration($data)
   {
+
+    
     $name        = mysqli_real_escape_string($this->db->link, $data['name']);
     $country     = mysqli_real_escape_string($this->db->link, $data['country']);
     $phone       = mysqli_real_escape_string($this->db->link, $data['phone']);
@@ -173,6 +177,8 @@ class Customer
 
   public function customerBilling($data)
   {
+    
+   //echo '<pre>';  print_r($_SESSION);die;
     $fname        = mysqli_real_escape_string($this->db->link, $data['fname']);
     $lname        = mysqli_real_escape_string($this->db->link, $data['lname']);
     $fulladdress  = mysqli_real_escape_string($this->db->link, $data['fulladdress']);
@@ -192,37 +198,106 @@ class Customer
     $cmr = new Customer();
     $sesid = Session::get("cmrId");
     $cid = 0;
+    $productid = 0;
     $gdata = $cmr->getCustomerData($sesid);
     if ($gdata) {
       while ($result = $gdata->fetch_assoc()) {
         $cid = $result["id"];
+     //  $productid = $result["productId"];
         break;
       }
     }
     $getPro = $ct->getCartProduct();
+ 
     if ($getPro) {
       $sum = 0;
       $qty = 0;
       $sid = "0";
+      $productid = 0;
       while ($result = $getPro->fetch_assoc()) {
+       // print_r($result);die;
         $sid = $result["sId"];
-        $query = "INSERT INTO tbl_bill_details(fname,lname,fulladdress,note,sid,cid,cdate)
-                                 VALUES('$fname','$lname','$fulladdress','$note','$sid',$cid,NOW())";
+        $productid = $result["productId"];
+        $cartId =  $result["cartId"];
+        $query = "INSERT INTO tbl_bill_details(fname,lname,fulladdress,note,sid,cid,productid,cdate)
+                                 VALUES('$fname','$lname','$fulladdress','$note','$sid',$cid,$productid,NOW())";
         $inserted_row = $this->db->insert($query);
+      //  print_r($inserted_row);die;
         if ($inserted_row) {
+          $viewType = 'checkout';
           $msg = "<div class='alert alert-success fade in'>
                                  <button data-dismiss='alert' class='close close-sm' type='button'><i class='icon-remove'></i></button>
                                  Order has been placed !!</div>";
+          $ct->delProductByCart($cartId,$viewType);
+          unset($_SESSION['qty']);
           return $msg;
         } else {
           $msg = "<div class='alert alert-danger fade in'>
                                  <button data-dismiss='alert' class='close close-sm' type='button'><i class='icon-remove'></i></button>
                                  Order not accepted !!</div>";
+                                 
           return $msg;
+         
         }
       }
     }
+  
   }
-}
+//   function checkUser($data = array()){ 
+//   //  echo 123;die;
+//     if(!empty($data)){ 
+//         // Check whether the user already exists in the database 
+//         $checkQuery = "SELECT * FROM ".$this->userTbl." WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'"; 
+//         $checkResult = $this->db->query($checkQuery); 
+         
+//         // Add modified time to the data array 
+//         if(!array_key_exists('modified',$data)){ 
+//             $data['modified'] = date("Y-m-d H:i:s"); 
+//         } 
+         
+//         if($checkResult->num_rows > 0){ 
+//             // Prepare column and value format 
+//             $colvalSet = ''; 
+//             $i = 0; 
+//             foreach($data as $key=>$val){ 
+//                 $pre = ($i > 0)?', ':''; 
+//                 $colvalSet .= $pre.$key."='".$this->db->real_escape_string($val)."'"; 
+//                 $i++; 
+//             } 
+//             $whereSql = " WHERE oauth_provider = '".$data['oauth_provider']."' AND oauth_uid = '".$data['oauth_uid']."'"; 
+             
+//             // Update user data in the database 
+//             $query = "UPDATE ".$this->userTbl." SET ".$colvalSet.$whereSql; 
+//             $update = $this->db->query($query); 
+//         }else{ 
+//             // Add created time to the data array 
+//             if(!array_key_exists('created',$data)){ 
+//                 $data['created'] = date("Y-m-d H:i:s"); 
+//             } 
+             
+//             // Prepare column and value format 
+//             $columns = $values = ''; 
+//             $i = 0; 
+//             foreach($data as $key=>$val){ 
+//                 $pre = ($i > 0)?', ':''; 
+//                 $columns .= $pre.$key; 
+//                 $values  .= $pre."'".$this->db->real_escape_string($val)."'"; 
+//                 $i++; 
+//             } 
+             
+//             // Insert user data in the database 
+//             $query = "INSERT INTO ".$this->userTbl." (".$columns.") VALUES (".$values.")"; 
+//             $insert = $this->db->query($query); 
+//         } 
+         
+//         // Get user data from the database 
+//         $result = $this->db->query($checkQuery); 
+//         $userData = $result->fetch_assoc(); 
+//     } 
+     
+//     // Return user data 
+//     return !empty($userData)?$userData:false; 
+// } 
+// }
 
 ?>

@@ -1,9 +1,6 @@
 <?php
 
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 // Add the Content-Type header for JSON
 // header('Content-Type: application/json');
 

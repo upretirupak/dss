@@ -70,11 +70,14 @@ class Cart
     }
   }
 
-  public function delProductByCart($delId)
+  public function delProductByCart($delId,$viewType=false)
   {
+  
     $delId      = mysqli_real_escape_string($this->db->link, $delId);
     $query      = "DELETE FROM tbl_cart WHERE cartId = '$delId'";
     $deldata    = $this->db->delete($query);
+
+    if($viewType != 'checkout'){
     if ($deldata) {
       echo "<script>window.location = 'carts.php'; </script>";
     } else {
@@ -83,6 +86,7 @@ class Cart
                 Product Not Deleted !!</div>";
       return $msg;
     }
+  }
   }
 
   public function checkCartTable()

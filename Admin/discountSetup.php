@@ -80,7 +80,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                 <?php foreach ($inserted_row as $row) { ?>
                                                     <option value="<?php echo $row['productId']; ?>"><?php echo $row['productName']; ?></option>
                                                 <?php } ?>
-                                                <!-- Add more options if needed -->
                                             </select>
                                             <input type="hidden" name="product_name" id="product_name" class="form-control">
                                         </td>
@@ -88,7 +87,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                         <td><button class="add-button btn btn-primary btn-lg" name="submit" type="submit">Add</button></td>
                                     </tr>
                                 </form>
-                                <!-- Add more rows if needed -->
                             </tbody>
                         </table>
                     </div>

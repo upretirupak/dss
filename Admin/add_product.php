@@ -5,6 +5,7 @@
 <?php include '../classes/Category.php'; ?>
 
 <?php
+error_reporting(0);
 $pd = new Product();
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit'])) {
   $insertProduct = $pd->productInsert($_POST, $_FILES);

@@ -9,7 +9,7 @@
   $db = new Database();
  ?>
 
-
+<?php echo 'hello'; ?>
 
 
 

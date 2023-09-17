@@ -6,6 +6,11 @@
         echo "<script>window.location = 'login.php'; </script>";
       }
 
+    //echo '<pre>';  print_r($_SESSION);exit;
+      $cartCheck = Session::get("qty");
+      if($cartCheck > 0) {
+        
+
  ?>
  <div class="sale-w3ls" style="min-height:200px;">
    <div class="container">
@@ -32,7 +37,9 @@
                     <?php
                     if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['Billing'])) {
                       $customerBill = $cmr->customerBilling($_POST);
+                      
                     }
+    
                     ?>
 
              <div class="col-md-9" id="checkout">
@@ -40,12 +47,24 @@
 
                  <div class="box">
                    <?php
+
+
+                      
      									 $id = Session::get("cmrId");
      									 $getdata =$cmr->getCustomerData($id);
      									 if ($getdata) {
      										 while ($result = $getdata->fetch_assoc()) {
+                                                $name = $result['name'];
+												$nameParts = explode(' ', $name);
+												if (count($nameParts) >= 2) {
+													$firstName = $nameParts[0];
+													$lastName = implode(' ', array_slice($nameParts, 1));
+												} else {
+													$firstName = $name;
+													$lastName = ''; 
+												}
      							 ?>
-                     <form method="post" action="#">
+                     <form method="post" action="#" id = "checkoutForm"  >
                          <h1>Checkout</h1>
                         <br/>
                          <ul class="nav nav-pills nav-justified" style="border:1px solid darkorange;">
@@ -68,19 +87,19 @@
                                <div class="col-sm-6">
                                          <div class="form-group">
                                              <label for="firstname">Firstname  *</label>
-                                             <input type="text" class="form-control" name="fname">
+                                             <input type="text" class="form-control" name="fname" value = "<?php echo $firstName ?>" >
                                          </div>
                                      </div>
                                      <div class="col-sm-6">
                                          <div class="form-group">
                                              <label for="lastname">Lastname  *</label>
-                                             <input type="text" class="form-control" name="lname">
+                                             <input type="text" class="form-control" name="lname" value = "<?php echo $lastName ?>">
                                          </div>
                                      </div>
                                      <div class="col-sm-6">
                                          <div class="form-group">
                                              <label for="lastname">Address  *</label>
-                                             <input type="text" class="form-control" name="fulladdress">
+                                             <input type="text" class="form-control" name="fulladdress" id = "address">
                                          </div>
                                      </div>
                                  </div>
@@ -144,9 +163,9 @@
                                  <a href="carts.php" class="btn btn-default"><i class="fa fa-chevron-left"></i> Back to Cart</a>
                              </div>
                              <div class="pull-right">
-                                 <button type="submit" id="cont" name="Billing" class="btn btn-primary" style="background-color:darkorange;border:0px;">Continue with COD <i class="fa fa-chevron-right"></i>
+                                 <button type="submit" id="cont" name="Billing" class="btn btn-primary paymentSubmit" onclick="refreshHeaderDiv() style="background-color:darkorange;border:0px;">Continue with COD <i class="fa fa-chevron-right"></i>
                                  </button>
-                                 <button type="button" id="btnCheckout" name="Billing" class="btn btn-success ">Continue with Paypal <i class="fa fa-chevron-right"></i>
+                                 <button type="button" id="btnCheckout" name="Billing" class="btn btn-success paymentSubmit">Continue with Paypal <i class="fa fa-chevron-right"></i>
                                  </button>
                              </div>
                          </div>
@@ -227,5 +246,14 @@
  		</div>
  	<!-- //new_arrivals -->
 
-
+<?php }  else { ?>
+     
+    <div class="single_page_agile_its_w3ls">
+							  <h6>Nothing in cart.Please order something to continue</h6>
+							   <p></p>
+							   <p class="w3ls_para"></p>
+							</div>
+  <?php 
+}
+    ?>
 <?php include 'inc/footer.php'; ?>

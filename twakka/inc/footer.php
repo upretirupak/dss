@@ -269,26 +269,63 @@
 	</script>
 <!-- //here ends scrolling icon -->
 
+
+
+
 <form class="paypal" action="checkout.php" method="post" id="paypal_form">
-        <input type="hidden" name="cmd" value="_xclick" />
+<?php
+     									$id = Session::get("cmrId");
+     									 $getdata =$cmr->getCustomerData($id);
+     									 if ($getdata) {
+     										 while ($result = $getdata->fetch_assoc()) {
+												$name = $result['name'];
+												$nameParts = explode(' ', $name);
+												if (count($nameParts) >= 2) {
+													$firstName = $nameParts[0];
+													$lastName = implode(' ', array_slice($nameParts, 1));
+												} else {
+													$firstName = $name;
+													$lastName = ''; 
+												}
+											
+     							 ?>
+
+        <input type="hidden" name="note" id = 'comment1' />
+        <input type="hidden" name="fulladdress" id = "hidden_fulladdress" />
+        <input type="hidden" name="payment" value="paypal" />
+        <input type="hidden" name="fname" value="<?php echo $firstName ?>" />
+        <input type="hidden" name="lname" value="<?php echo $lastName ?>" />
+        <input type="hidden" name="amount_total" id="amount_total" value="" / >
+		<input type="hidden" name="cmd" value="_xclick" />
         <input type="hidden" name="no_note" value="1" />
         <input type="hidden" name="lc" value="UK" />
         <input type="hidden" name="bn" value="PP-BuyNowBF:btn_buynow_LG.gif:NonHostedGuest" />
-        <input type="hidden" name="first_name" value="Customer's First Name" />
-        <input type="hidden" name="last_name" value="Customer's Last Name" />
-        <input type="hidden" name="payer_email" value="customer@example.com" />
-        <input type="hidden" name="amount_total" id="amount_total" value="" / >
     </form>
-
+<?php }} ?> 
 <!-- for bootstrap working -->
 <script type="text/javascript" src="js/bootstrap.js"></script>
 
 <script>
+  
+
+const userNote = document.getElementById('comment');
+    const userNotepaypal = document.getElementById('comment1');
+    userNote.addEventListener('input', function () {
+        userNotepaypal.value = userNote.value;
+    });
+
+const userFullAddress = document.getElementById('address');
+    const hiddenFullAddress = document.getElementById('hidden_fulladdress');
+    userFullAddress.addEventListener('input', function () {
+        hiddenFullAddress.value = userFullAddress.value;
+    });
+
 	$('#btnCheckout').on('click',function(e){
+	//	$("#checkoutForm").attr("action", "checkout.php");
 		let amount=$('#total_payment').text();
 		let fname = $("input[name='fname']").val();
 		let lname = $("input[name='lname']").val();
-		let fulladdress = $("input[name='fulladdress']").val();
+		let fulladdress = $('#address').val();
 		
 		 if(fname=='')
 		{
@@ -317,7 +354,16 @@
 			alert('Cart Total is less to proceed to checkout');
 		}
 		
-	})
+	});
+
+	// function refreshHeaderDiv() {
+    //         // You can use AJAX to fetch new content for the div
+    //         // For simplicity, here we're just setting the content to a fixed message
+    //         const headerDiv = document.querySelector('.header');
+    //         if (headerDiv) {
+    //             headerDiv.innerHTML = 'Header content refreshed at ' + new Date();
+    //         }
+    //     }
 	
 </script>
 </body>

@@ -38,7 +38,11 @@ public function __construct()
             Session::set("adminId", $value['adminID']);
             Session::set("adminUser", $value['adminUser']);
             Session::set("adminName", $value['adminName']);
-            header("location:Dashboard.php");
+         //   header("location:Dashboard.php");
+         header("location:../demo.adminkit.io/");
+
+
+
       }else {
           $loginmsg = "Username or Password not match !!";
           return $loginmsg;

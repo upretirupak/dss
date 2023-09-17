@@ -5,6 +5,7 @@
   include '../helpers/Format.php';
 
   spl_autoload_register(function($class){
+    print_r($class);
     include_once "../classes/".$class.".php";
    });
    $db  = new Database();
@@ -13,6 +14,7 @@
    $cat = new Category();
    $ct  = new Cart();
    $cmr = new Customer();
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -53,14 +55,21 @@
               $qty = Session::get("qty");
               $sum = Session::get("sum");
               echo "<span style='color:darkorange;'>(".$qty. ")</span></a>";
-
             }else {
               echo "<span style='color:darkorange;'>(Empty)</span></a>";
             }
 
   				 ?>
   			</span></li>
-        <li> <a href="registration.php"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Sign Up </a></li>
+        <li> 
+        <?php 
+         $login = Session::get("cuslogin");
+        if ($login == False) {  ?>
+          <a href="registration.php"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Sign Up </a></li>
+            <?php }else{?>
+              
+            <?php } ?> 
+        
         <?php
           if (isset($_GET['cid'])) {
             $delData = $ct->delCustomerCart();
